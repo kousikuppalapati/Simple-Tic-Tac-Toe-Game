@@ -1,90 +1,56 @@
-# Neural Tac-Toe 🤖🎮  
-### An AI-Driven Game & Learning Experiment
+# Neural Tac-Toe 🤖🎮
 
-Neural Tac-Toe is an advanced Tic-Tac-Toe game built as part of my ongoing journey of
-**developing intelligent, adaptive AI-based games**.
+An AI-powered Tic Tac Toe game built as part of my ongoing exploration into
+**AI-driven games and adaptive systems**.
 
-This project is not just about winning a game —  
-it is about **training, reacting, adapting, and interacting with AI**.
-
----
-
-## 🧠 Project Vision
-
-Neural Tac-Toe is an evolution of my earlier AI game experiments.  
-Each version improves on:
-
-- Decision-making intelligence
-- Adaptive difficulty
-- Human-AI interaction
-- Real-time AI personality via chat
-
-This version introduces **Google Gemini AI** as a conversational opponent that reacts
-to gameplay outcomes in real time.
+This project evolves my earlier AI game experiments by adding:
+- Adaptive gameplay
+- Conversational AI reactions
+- Modern interactive UI
 
 ---
 
 ## ✨ Features
-
-- 🎮 **Adaptive AI Gameplay**
-  - Easy, Medium, Hard, and Adaptive modes
-  - Minimax-based decision making
-- 🤖 **Gemini AI Chat Integration**
-  - Context-aware AI reactions
-  - Game-state-aware responses
-- 🧠 **AI Training Concept**
-  - AI difficulty adapts based on player performance
-- 💎 **Modern UI**
-  - Glassmorphism design
-  - Neon highlights and smooth animations
-- 🌐 **Runs Fully in Browser**
-  - Hosted via GitHub Pages
-  - No installation required
+- Minimax-based AI gameplay
+- Google Gemini AI chat reactions
+- Adaptive difficulty concept
+- Clean glassmorphism UI
+- Runs fully in the browser
 
 ---
 
-## 🛠️ Tech Stack
+## ⚠️ Security Notice
+This project requires users to provide **their own Gemini API key**.
 
-- **HTML5**
-- **CSS3**
-- **JavaScript (Vanilla)**
-- **Tailwind CSS (CDN)**
-- **Google Gemini API**
+- API calls are client-side
+- Keys are visible in browser developer tools
+- Intended for **educational & demo use only**
+
+❗ Do NOT use production or billing-enabled keys.
 
 ---
 
-## 🔑 How It Works
-
-1. User provides a free Gemini API key
-2. Game logic runs fully in the browser
-3. AI gameplay uses deterministic algorithms
-4. AI chat uses Gemini for contextual reactions
-
-> This design keeps the project lightweight while showcasing real AI interaction.
+## 🛠 Tech Stack
+- HTML / CSS / JavaScript
+- Tailwind CSS (CDN)
+- Google Gemini API
 
 ---
 
 ## 🚀 Deployment
-
-- Frontend hosted on **GitHub Pages**
-- Fully client-side architecture
-- Designed for educational & experimental use
+Hosted using **GitHub Pages**  
+No installation required.
 
 ---
 
-## 📌 Future Improvements
-
-- Backend-secured API calls
-- Global leaderboard
+## 📌 Future Scope
+- Backend-secured API proxy
+- Public AI chat without keys
 - Persistent AI learning
-- Multiplayer AI simulations
+- Leaderboards
 
 ---
 
 ## 👨‍💻 Author
-
-Built as part of my continuous exploration into  
-**AI-driven games, adaptive systems, and human-AI interaction**.
-
-This project represents an improvement over previous AI game iterations,
-focusing on polish, intelligence, and interaction.
+Built as part of my continuous journey into  
+**AI games, adaptive intelligence, and human–AI interaction**.
