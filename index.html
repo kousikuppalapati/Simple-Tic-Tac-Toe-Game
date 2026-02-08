@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Neural Tac-Toe 🤖</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="bg-slate-950 text-white min-h-screen flex items-center justify-center">
+
+<div class="max-w-5xl w-full grid md:grid-cols-3 gap-6 p-4">
+
+  <!-- GAME -->
+  <div class="md:col-span-2 glass p-6 rounded-2xl">
+    <h1 class="text-3xl font-bold text-center mb-4">Neural Tic-Tac-Toe</h1>
+    <h2 id="status" class="text-center mb-4 text-blue-400">Your turn</h2>
+
+    <div class="grid grid-cols-3 gap-3 w-64 mx-auto">
+      <button class="cell" onclick="move(0)"></button>
+      <button class="cell" onclick="move(1)"></button>
+      <button class="cell" onclick="move(2)"></button>
+      <button class="cell" onclick="move(3)"></button>
+      <button class="cell" onclick="move(4)"></button>
+      <button class="cell" onclick="move(5)"></button>
+      <button class="cell" onclick="move(6)"></button>
+      <button class="cell" onclick="move(7)"></button>
+      <button class="cell" onclick="move(8)"></button>
+    </div>
+
+    <button onclick="resetGame()" class="mt-6 w-full bg-slate-800 p-3 rounded-xl">
+      Reset Game
+    </button>
+  </div>
+
+  <!-- CHAT -->
+  <div class="glass rounded-2xl flex flex-col">
+    <div class="p-4 border-b border-slate-700 font-bold">AI Chat 🤖</div>
+
+    <div id="chatBox" class="flex-1 p-3 space-y-2 overflow-y-auto"></div>
+
+    <div class="p-3 flex gap-2">
+      <input id="chatInput"
+        placeholder="Type a message..."
+        class="flex-1 bg-slate-800 p-2 rounded-xl"
+        onkeypress="if(event.key==='Enter')sendChat()" />
+      <button onclick="sendChat()" class="bg-blue-600 px-4 rounded-xl">➤</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
