@@ -3,39 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neural Tac-Toe | Gemini AI</title>
+    <title>Neural Tac-Toe | Gemini AI V3</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Outfit', sans-serif; }
-        
-        /* Glassmorphism Panel Style */
         .glass-panel {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
-
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
-
-        /* Cell Animation */
         .cell { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
         .cell:active { transform: scale(0.92); }
-        
-        /* Chat Bubbles */
-        .chat-bubble { position: relative; max-width: 85%; word-wrap: break-word; }
-        .chat-user { border-bottom-right-radius: 2px; }
-        .chat-ai { border-bottom-left-radius: 2px; }
-
-        /* Neon Glows */
+        .chat-bubble { max-width: 85%; word-wrap: break-word; }
         .glow-text { text-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
         .win-glow { box-shadow: inset 0 0 30px rgba(34, 197, 94, 0.2); border-color: #22c55e !important; }
-        
-        /* Animations */
         @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fade-in 0.5s ease-out forwards; }
     </style>
@@ -43,22 +29,22 @@
 <body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]">
 
     <div id="setup-screen" class="w-full max-w-lg glass-panel p-8 rounded-3xl shadow-2xl relative z-10 animate-fade-in">
-        <div class="text-center mb-8">
-            <h1 class="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500 glow-text mb-2">NEURAL TACTOE</h1>
-            <p class="text-slate-400">Powered by Google Gemini</p>
+        <div class="text-center mb-6">
+            <h1 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500 glow-text mb-2">NEURAL TACTOE</h1>
+            <p class="text-slate-400 text-sm">Gemini Integrated System</p>
         </div>
         
-        <div class="space-y-5">
+        <div class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-500 mb-1 ml-1">Player Name</label>
-                    <input type="text" id="p-name" class="w-full bg-slate-900/60 border border-slate-700 rounded-xl p-3 focus:border-blue-500 focus:outline-none transition text-sm" placeholder="Your Name" value="Player">
+                    <input type="text" id="p-name" class="w-full bg-slate-900/60 border border-slate-700 rounded-xl p-3 focus:border-blue-500 focus:outline-none transition text-sm" value="Player">
                 </div>
                 <div>
                       <label class="block text-xs font-bold uppercase text-slate-500 mb-1 ml-1">AI Model</label>
-                    <select id="model-select" class="w-full bg-slate-900/60 border border-slate-700 rounded-xl p-3 focus:border-blue-500 focus:outline-none text-sm cursor-pointer">
-                        <option value="gemini-1.5-flash">Gemini 1.5 Flash (Fast)</option>
-                        <option value="gemini-1.5-pro">Gemini 1.5 Pro (Smart)</option>
+                      <select id="model-selector-v2" class="w-full bg-slate-900/60 border border-slate-700 rounded-xl p-3 focus:border-blue-500 focus:outline-none text-sm cursor-pointer">
+                        <option value="gemini-1.5-flash-001">Gemini 1.5 Flash (Rec.)</option>
+                        <option value="gemini-1.5-pro-001">Gemini 1.5 Pro</option>
                     </select>
                 </div>
             </div>
@@ -66,27 +52,29 @@
             <div>
                 <label class="block text-xs font-bold uppercase text-slate-500 mb-1 ml-1">Gemini API Key</label>
                 <div class="relative">
-                    <input type="password" id="api-key" class="w-full bg-slate-900/60 border border-slate-700 rounded-xl p-3 pl-10 focus:border-blue-500 focus:outline-none transition text-sm font-mono" placeholder="Paste your key here (starts with AIza...)">
+                    <input type="password" id="api-key-input" class="w-full bg-slate-900/60 border border-slate-700 rounded-xl p-3 pl-10 focus:border-blue-500 focus:outline-none transition text-sm font-mono" placeholder="Paste AIza key here...">
                     <div class="absolute left-3 top-3 text-slate-500">🔑</div>
                 </div>
-                <div class="text-right mt-1">
-                    <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-xs text-blue-400 hover:text-blue-300 font-medium flex items-center justify-end gap-1">
-                        Get Key Here <span class="text-[10px]">↗</span>
-                    </a>
-                </div>
             </div>
 
-            <div>
-                <label class="block text-xs font-bold uppercase text-slate-500 mb-2 ml-1">Choose Side</label>
+            <div id="connection-log" class="text-xs font-mono text-slate-400 min-h-[20px] text-center"></div>
+
+            <div class="flex gap-3">
+                <button onclick="testConnection()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-xl font-bold text-sm transition border border-slate-600">
+                    Test Connection
+                </button>
+                <button onclick="startGame()" class="flex-[2] bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-xl font-bold text-sm shadow-lg shadow-blue-500/20 transition">
+                    Start Game
+                </button>
+            </div>
+            
+            <div class="pt-4 border-t border-slate-800">
+                <label class="block text-xs font-bold uppercase text-slate-500 mb-2 ml-1">Play As</label>
                 <div class="grid grid-cols-2 gap-3">
-                    <button class="marker-btn bg-blue-600/20 border border-blue-500 text-blue-400 p-4 rounded-xl font-bold text-2xl hover:bg-blue-600/30 transition" onclick="selectMarker('X', this)">X (First)</button>
-                    <button class="marker-btn bg-slate-800 border border-slate-700 text-slate-400 p-4 rounded-xl font-bold text-2xl hover:bg-slate-700 transition" onclick="selectMarker('O', this)">O (Second)</button>
+                    <button class="marker-btn bg-blue-600/20 border border-blue-500 text-blue-400 p-3 rounded-xl font-bold text-xl transition" onclick="selectMarker('X', this)">X (First)</button>
+                    <button class="marker-btn bg-slate-800 border border-slate-700 text-slate-400 p-3 rounded-xl font-bold text-xl transition" onclick="selectMarker('O', this)">O (Second)</button>
                 </div>
             </div>
-
-            <button onclick="startGame()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white p-4 rounded-xl font-bold text-lg shadow-lg shadow-blue-500/20 transform transition active:scale-95 mt-4">
-                Initialize System
-            </button>
         </div>
     </div>
 
@@ -95,50 +83,49 @@
         <div class="flex-1 glass-panel rounded-3xl p-6 flex flex-col relative overflow-hidden">
             <div class="flex justify-between items-center mb-6">
                 <div class="flex gap-1 bg-slate-800/50 p-1 rounded-lg">
-                    <button class="diff-btn px-4 py-1.5 text-xs font-bold rounded-md bg-slate-700 text-slate-300 transition" onclick="setDiff('Easy', this)">Easy</button>
-                    <button class="diff-btn px-4 py-1.5 text-xs font-bold rounded-md bg-slate-700 text-slate-300 transition" onclick="setDiff('Medium', this)">Med</button>
-                    <button class="diff-btn px-4 py-1.5 text-xs font-bold rounded-md bg-blue-500 text-white shadow-lg shadow-blue-500/30 transition" onclick="setDiff('Hard', this)">Hard</button>
+                    <button class="diff-btn px-3 py-1.5 text-[10px] uppercase font-bold rounded bg-slate-700 text-slate-300 transition" onclick="setDiff('Easy', this)">Easy</button>
+                    <button class="diff-btn px-3 py-1.5 text-[10px] uppercase font-bold rounded bg-slate-700 text-slate-300 transition" onclick="setDiff('Medium', this)">Med</button>
+                    <button class="diff-btn px-3 py-1.5 text-[10px] uppercase font-bold rounded bg-slate-700 text-slate-300 transition" onclick="setDiff('Hard', this)">Hard</button>
+                    <button class="diff-btn px-3 py-1.5 text-[10px] uppercase font-bold rounded bg-blue-600 text-white transition shadow-lg shadow-blue-500/30" onclick="setDiff('Adaptive', this)">Adaptive</button>
                 </div>
-                <div id="stats-display" class="px-4 py-2 bg-slate-800/80 rounded-lg font-mono text-xs text-blue-300 border border-slate-700/50">
+                <div id="stats-display" class="px-3 py-1.5 bg-slate-800/80 rounded text-[10px] font-mono text-blue-300 border border-slate-700/50">
                     W:0 / L:0 / D:0
                 </div>
             </div>
 
-            <div class="text-center mb-8 relative z-10 min-h-[80px] flex flex-col justify-center">
-                <h2 id="status-msg" class="text-3xl font-bold text-white tracking-wide drop-shadow-md transition-all duration-300">Your Turn</h2>
+            <div class="text-center mb-6 relative z-10 flex flex-col justify-center h-20">
+                <h2 id="status-msg" class="text-3xl font-bold text-white tracking-wide drop-shadow-md transition-all">Your Turn</h2>
                 <div id="turn-indicator" class="w-2 h-2 bg-blue-500 rounded-full mx-auto mt-2 animate-pulse shadow-[0_0_10px_#3b82f6]"></div>
             </div>
 
-            <div class="grid grid-cols-3 gap-3 max-w-[360px] mx-auto mb-auto z-10 relative">
-                <button class="cell w-24 h-24 md:w-28 md:h-28 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-2xl text-6xl font-bold flex items-center justify-center shadow-inner" onclick="move(0)" id="c0"></button>
-                <button class="cell w-24 h-24 md:w-28 md:h-28 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-2xl text-6xl font-bold flex items-center justify-center shadow-inner" onclick="move(1)" id="c1"></button>
-                <button class="cell w-24 h-24 md:w-28 md:h-28 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-2xl text-6xl font-bold flex items-center justify-center shadow-inner" onclick="move(2)" id="c2"></button>
-                <button class="cell w-24 h-24 md:w-28 md:h-28 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-2xl text-6xl font-bold flex items-center justify-center shadow-inner" onclick="move(3)" id="c3"></button>
-                <button class="cell w-24 h-24 md:w-28 md:h-28 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-2xl text-6xl font-bold flex items-center justify-center shadow-inner" onclick="move(4)" id="c4"></button>
-                <button class="cell w-24 h-24 md:w-28 md:h-28 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-2xl text-6xl font-bold flex items-center justify-center shadow-inner" onclick="move(5)" id="c5"></button>
-                <button class="cell w-24 h-24 md:w-28 md:h-28 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-2xl text-6xl font-bold flex items-center justify-center shadow-inner" onclick="move(6)" id="c6"></button>
-                <button class="cell w-24 h-24 md:w-28 md:h-28 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-2xl text-6xl font-bold flex items-center justify-center shadow-inner" onclick="move(7)" id="c7"></button>
-                <button class="cell w-24 h-24 md:w-28 md:h-28 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-2xl text-6xl font-bold flex items-center justify-center shadow-inner" onclick="move(8)" id="c8"></button>
-                
-                <div id="win-line" class="absolute pointer-events-none hidden bg-green-500 rounded-full shadow-[0_0_15px_#22c55e] z-20"></div>
+            <div class="grid grid-cols-3 gap-3 max-w-[320px] mx-auto mb-auto z-10 relative">
+                <button class="cell w-20 h-20 md:w-24 md:h-24 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-xl text-5xl font-bold flex items-center justify-center shadow-inner" onclick="move(0)" id="c0"></button>
+                <button class="cell w-20 h-20 md:w-24 md:h-24 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-xl text-5xl font-bold flex items-center justify-center shadow-inner" onclick="move(1)" id="c1"></button>
+                <button class="cell w-20 h-20 md:w-24 md:h-24 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-xl text-5xl font-bold flex items-center justify-center shadow-inner" onclick="move(2)" id="c2"></button>
+                <button class="cell w-20 h-20 md:w-24 md:h-24 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-xl text-5xl font-bold flex items-center justify-center shadow-inner" onclick="move(3)" id="c3"></button>
+                <button class="cell w-20 h-20 md:w-24 md:h-24 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-xl text-5xl font-bold flex items-center justify-center shadow-inner" onclick="move(4)" id="c4"></button>
+                <button class="cell w-20 h-20 md:w-24 md:h-24 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-xl text-5xl font-bold flex items-center justify-center shadow-inner" onclick="move(5)" id="c5"></button>
+                <button class="cell w-20 h-20 md:w-24 md:h-24 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-xl text-5xl font-bold flex items-center justify-center shadow-inner" onclick="move(6)" id="c6"></button>
+                <button class="cell w-20 h-20 md:w-24 md:h-24 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-xl text-5xl font-bold flex items-center justify-center shadow-inner" onclick="move(7)" id="c7"></button>
+                <button class="cell w-20 h-20 md:w-24 md:h-24 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-xl text-5xl font-bold flex items-center justify-center shadow-inner" onclick="move(8)" id="c8"></button>
             </div>
 
-            <button onclick="resetGame()" class="w-full py-4 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl font-bold text-slate-300 mt-4 z-10 transition tracking-wide uppercase text-sm">
+            <button onclick="resetGame()" class="w-full py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl font-bold text-slate-300 mt-4 z-10 transition text-xs uppercase tracking-widest">
                 Reset Board
             </button>
             
-            <div class="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
-            <div class="absolute bottom-0 left-0 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none"></div>
+            <div class="absolute top-0 right-0 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 w-80 h-80 bg-indigo-600/10 rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none"></div>
         </div>
 
-        <div class="w-full lg:w-[400px] glass-panel rounded-3xl flex flex-col shadow-2xl relative overflow-hidden">
-            <div class="p-5 border-b border-slate-700/50 flex justify-between items-center bg-slate-800/30">
+        <div class="w-full lg:w-[380px] glass-panel rounded-3xl flex flex-col shadow-2xl overflow-hidden">
+            <div class="p-4 border-b border-slate-700/50 flex justify-between items-center bg-slate-800/30">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg border border-white/10">
-                        <span class="text-lg">✨</span>
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg border border-white/10 text-xs">
+                        ✨
                     </div>
                     <div>
-                        <h3 class="font-bold text-white text-sm">Gemini Companion</h3>
+                        <h3 class="font-bold text-white text-sm">Gemini Live</h3>
                         <div class="text-[10px] text-slate-400 font-mono flex items-center gap-1.5" id="connection-status">
                             <span class="w-1.5 h-1.5 bg-slate-500 rounded-full"></span> OFFLINE
                         </div>
@@ -146,364 +133,293 @@
                 </div>
             </div>
             
-            <div id="chat-box" class="flex-1 p-5 overflow-y-auto space-y-4 bg-slate-900/20 scroll-smooth">
-                <div class="text-center text-xs text-slate-500 mt-4">System initialized. Waiting for API key...</div>
+            <div id="chat-box" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-900/20 scroll-smooth">
+                <div class="text-center text-xs text-slate-500 mt-4">System ready.</div>
             </div>
 
-            <div class="p-4 border-t border-slate-700/50 bg-slate-800/30">
+            <div class="p-3 border-t border-slate-700/50 bg-slate-800/30">
                 <div class="flex gap-2 relative">
-                    <input type="text" id="chat-input" disabled class="flex-1 bg-slate-900/50 text-white text-sm rounded-xl px-4 py-3 border border-slate-700 focus:border-blue-500 focus:outline-none transition placeholder-slate-600 disabled:opacity-50 disabled:cursor-not-allowed" placeholder="Say something..." onkeypress="if(event.key==='Enter') sendChat()">
-                    <button id="send-btn" onclick="sendChat()" disabled class="bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-5 rounded-xl font-bold transition shadow-lg shadow-blue-600/20">
-                        ➤
-                    </button>
+                    <input type="text" id="chat-input" disabled class="flex-1 bg-slate-900/50 text-white text-sm rounded-lg px-3 py-2 border border-slate-700 focus:border-blue-500 focus:outline-none transition placeholder-slate-600 disabled:opacity-50" placeholder="Type message..." onkeypress="if(event.key==='Enter') sendChat()">
+                    <button id="send-btn" onclick="sendChat()" disabled class="bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 text-white px-4 rounded-lg font-bold transition">➤</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- GAME STATE & CONFIG ---
+        // STATE
         let gameState = {
             board: Array(9).fill(null),
             active: false,
             pMarker: 'X', aiMarker: 'O', turn: 'X',
             wins: 0, losses: 0, draws: 0,
-            difficulty: 'Hard'
+            difficulty: 'Adaptive', adaptiveLevel: 1
         };
-        let user = "Player", apiKey = "", model = "gemini-1.5-flash";
-        
-        // --- DOM ELEMENTS ---
+        let user = "Player", apiKey = "", model = "gemini-1.5-flash-001";
+        let chatHistory = [];
+        const MAX_HISTORY = 10;
+
+        // DOM
         const cells = Array.from({length: 9}, (_, i) => document.getElementById(`c${i}`));
         const statusMsg = document.getElementById('status-msg');
         const turnIndicator = document.getElementById('turn-indicator');
         const chatBox = document.getElementById('chat-box');
-        const chatInput = document.getElementById('chat-input');
-        const sendBtn = document.getElementById('send-btn');
-        const connStatus = document.getElementById('connection-status');
-        
-        // --- CHAT MEMORY ---
-        // We keep a local history. Gemini API works best if we alternate User/Model in history.
-        let chatHistory = []; 
-        const MAX_HISTORY = 12; // Keep context concise
+        const log = document.getElementById('connection-log');
 
-        // --- SETUP FUNCTIONS ---
+        // SETUP
         function selectMarker(m, btn) {
             gameState.pMarker = m;
             document.querySelectorAll('.marker-btn').forEach(b => {
-                b.className = "marker-btn bg-slate-800 border border-slate-700 text-slate-400 p-4 rounded-xl font-bold text-2xl hover:bg-slate-700 transition";
+                b.className = "marker-btn bg-slate-800 border border-slate-700 text-slate-400 p-3 rounded-xl font-bold text-xl transition";
             });
-            btn.className = "marker-btn bg-blue-600/20 border border-blue-500 text-blue-400 p-4 rounded-xl font-bold text-2xl hover:bg-blue-600/30 transition";
+            btn.className = "marker-btn bg-blue-600/20 border border-blue-500 text-blue-400 p-3 rounded-xl font-bold text-xl transition";
+        }
+
+        async function testConnection() {
+            const k = document.getElementById('api-key-input').value.trim();
+            const m = document.getElementById('model-selector-v2').value;
+            
+            if(!k) { log.textContent = "Error: Key missing"; log.className="text-red-400 text-xs font-mono text-center"; return; }
+            
+            log.textContent = `Testing ${m}...`;
+            log.className = "text-yellow-400 text-xs font-mono text-center animate-pulse";
+            
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${k}`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ contents: [{ parts: [{ text: "Ping" }] }] })
+                });
+                
+                if(response.ok) {
+                    log.textContent = "✓ Connected Successfully!";
+                    log.className = "text-green-400 text-xs font-mono text-center font-bold";
+                } else {
+                    const err = await response.json();
+                    throw new Error(err.error?.message || response.statusText);
+                }
+            } catch(e) {
+                log.textContent = `Fail: ${e.message.substring(0,40)}...`;
+                log.className = "text-red-400 text-xs font-mono text-center";
+                console.error(e);
+            }
         }
 
         function startGame() {
             user = document.getElementById('p-name').value || "Player";
-            apiKey = document.getElementById('api-key').value.trim();
-            model = document.getElementById('model-select').value;
+            apiKey = document.getElementById('api-key-input').value.trim();
+            model = document.getElementById('model-selector-v2').value;
             
-            if(!apiKey) { 
-                alert("⚠️ Please enter a Google Gemini API Key."); 
-                return; 
-            }
+            if(!apiKey) { alert("Please enter API Key"); return; }
 
-            // UI Transitions
             document.getElementById('setup-screen').classList.add('hidden');
             document.getElementById('game-screen').classList.remove('hidden');
             
-            // Enable Chat
-            chatInput.disabled = false;
-            sendBtn.disabled = false;
-            connStatus.innerHTML = `<span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> ONLINE`;
+            document.getElementById('chat-input').disabled = false;
+            document.getElementById('send-btn').disabled = false;
+            document.getElementById('connection-status').innerHTML = `<span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> ONLINE`;
             
-            // Setup Markers
             gameState.aiMarker = gameState.pMarker === 'X' ? 'O' : 'X';
-            
-            // Initialize Chatbot with a greeting
-            chatBox.innerHTML = '';
-            addMsg('ai', `Hello ${user}! I'm ready to play Tic-Tac-Toe. I'll be playing as ${gameState.aiMarker}. Good luck!`);
-            
+            addMsg('ai', `System Online. Model: ${model}. Good luck, ${user}!`);
             resetGame();
         }
 
         function setDiff(mode, btn) {
             gameState.difficulty = mode;
-            document.querySelectorAll('.diff-btn').forEach(b => b.className = "diff-btn px-4 py-1.5 text-xs font-bold rounded-md bg-slate-700 text-slate-300 transition");
-            btn.className = "diff-btn px-4 py-1.5 text-xs font-bold rounded-md bg-blue-500 text-white shadow-lg shadow-blue-500/30 transition";
+            document.querySelectorAll('.diff-btn').forEach(b => b.className = "diff-btn px-3 py-1.5 text-[10px] uppercase font-bold rounded bg-slate-700 text-slate-300 transition");
+            btn.className = "diff-btn px-3 py-1.5 text-[10px] uppercase font-bold rounded bg-blue-600 text-white transition shadow-lg shadow-blue-500/30";
+            
+            if(mode === 'Easy') gameState.adaptiveLevel = 0;
+            if(mode === 'Medium') gameState.adaptiveLevel = 1;
+            if(mode === 'Hard') gameState.adaptiveLevel = 2;
             resetGame();
         }
 
-        // --- GAMEPLAY LOGIC ---
+        // GAME LOGIC
         function resetGame() {
             gameState.board.fill(null);
             gameState.active = true;
             gameState.turn = 'X';
-            
             cells.forEach(c => {
                 c.textContent = "";
-                c.className = "cell w-24 h-24 md:w-28 md:h-28 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-2xl text-6xl font-bold flex items-center justify-center shadow-inner cursor-pointer text-slate-200";
+                c.className = "cell w-20 h-20 md:w-24 md:h-24 bg-slate-800/60 hover:bg-slate-700/60 border-2 border-slate-700 rounded-xl text-5xl font-bold flex items-center justify-center shadow-inner cursor-pointer text-slate-200";
             });
-            document.getElementById('win-line').classList.add('hidden');
-
-            updateStatus();
-
-            // AI goes first if it's X
-            if(gameState.aiMarker === 'X') {
-                setTimeout(aiTurn, 800);
-            }
+            updateUI();
+            if(gameState.aiMarker === 'X') setTimeout(aiTurn, 800);
         }
 
-        function updateStatus() {
+        function updateUI() {
             document.getElementById('stats-display').textContent = `W:${gameState.wins} | L:${gameState.losses} | D:${gameState.draws}`;
-            if(!gameState.active) return;
-
-            if (gameState.turn === gameState.pMarker) {
-                statusMsg.textContent = "Your Turn";
-                statusMsg.className = "text-3xl font-bold text-white tracking-wide";
-                turnIndicator.className = "w-2 h-2 bg-blue-500 rounded-full mx-auto mt-2 animate-pulse shadow-[0_0_10px_#3b82f6]";
-            } else {
-                statusMsg.textContent = "AI Thinking...";
-                statusMsg.className = "text-3xl font-bold text-indigo-400 tracking-wide";
-                turnIndicator.className = "w-2 h-2 bg-indigo-500 rounded-full mx-auto mt-2 animate-bounce";
+            if(gameState.active) {
+                if(gameState.turn === gameState.pMarker) {
+                    statusMsg.textContent = "Your Turn";
+                    statusMsg.className = "text-3xl font-bold text-white tracking-wide";
+                    turnIndicator.className = "w-2 h-2 bg-blue-500 rounded-full mx-auto mt-2 animate-pulse shadow-[0_0_10px_#3b82f6]";
+                } else {
+                    statusMsg.textContent = "AI Thinking...";
+                    statusMsg.className = "text-3xl font-bold text-indigo-400 tracking-wide";
+                    turnIndicator.className = "w-2 h-2 bg-indigo-500 rounded-full mx-auto mt-2 animate-bounce";
+                }
             }
         }
 
-        function move(idx) {
-            if(!gameState.active || gameState.board[idx] || gameState.turn !== gameState.pMarker) return;
-            executeMove(idx, gameState.pMarker);
+        function move(i) {
+            if(!gameState.active || gameState.board[i] || gameState.turn !== gameState.pMarker) return;
+            doMove(i, gameState.pMarker);
             if(checkEnd()) return;
             gameState.turn = gameState.aiMarker;
-            updateStatus();
-            setTimeout(aiTurn, 600 + Math.random() * 400); // Natural delay
+            updateUI();
+            setTimeout(aiTurn, 600 + Math.random()*300);
         }
 
-        function executeMove(idx, marker) {
-            gameState.board[idx] = marker;
-            const cell = cells[idx];
-            cell.textContent = marker;
-            
-            cell.classList.remove('text-slate-200', 'bg-slate-800/60', 'hover:bg-slate-700/60', 'cursor-pointer');
-            
-            if (marker === gameState.pMarker) {
-                cell.classList.add('text-blue-400', 'bg-slate-900', 'shadow-[inset_0_0_15px_rgba(59,130,246,0.2)]', 'border-blue-500/30');
-            } else {
-                cell.classList.add('text-indigo-400', 'bg-slate-900', 'shadow-[inset_0_0_15px_rgba(99,102,241,0.2)]', 'border-indigo-500/30');
-            }
+        function doMove(i, m) {
+            gameState.board[i] = m;
+            const c = cells[i];
+            c.textContent = m;
+            c.classList.remove('text-slate-200', 'bg-slate-800/60', 'hover:bg-slate-700/60', 'cursor-pointer');
+            if(m === gameState.pMarker) c.classList.add('text-blue-400', 'bg-slate-900', 'border-blue-500/30');
+            else c.classList.add('text-indigo-400', 'bg-slate-900', 'border-indigo-500/30');
         }
 
         function aiTurn() {
             if(!gameState.active) return;
+            let lvl = gameState.difficulty === 'Adaptive' ? gameState.adaptiveLevel : 
+                     (gameState.difficulty==='Easy'?0 : gameState.difficulty==='Medium'?1 : 2);
             
-            let idx;
-            // Select logic based on difficulty
-            if (gameState.difficulty === 'Easy') idx = getRandomMove();
-            else if (gameState.difficulty === 'Medium') idx = Math.random() > 0.4 ? getBestMove() : getRandomMove();
-            else idx = getBestMove(); // Hard
-
-            executeMove(idx, gameState.aiMarker);
+            let idx = (lvl===2) ? getMinimax() : (lvl===1 && Math.random()>.4 ? getMinimax() : getRandom());
+            doMove(idx, gameState.aiMarker);
             if(checkEnd()) return;
             gameState.turn = gameState.pMarker;
-            updateStatus();
+            updateUI();
         }
 
-        // --- AI MOVE ALGORITHMS ---
-        function getRandomMove() {
-            let opts = gameState.board.map((v,i) => v ? null : i).filter(v => v !== null);
+        function getRandom() { 
+            let opts = gameState.board.map((v,i)=>v?null:i).filter(v=>v!==null);
             return opts[Math.floor(Math.random()*opts.length)];
         }
-
-        function getBestMove() {
-            // Minimax Algorithm
-            let bestScore = -Infinity;
-            let move;
-            for(let i=0; i<9; i++) {
+        function getMinimax() {
+            let best = -Infinity, mv;
+            for(let i=0;i<9;i++) {
                 if(!gameState.board[i]) {
-                    gameState.board[i] = gameState.aiMarker;
-                    let score = minimax(gameState.board, 0, false);
-                    gameState.board[i] = null;
-                    if(score > bestScore) {
-                        bestScore = score;
-                        move = i;
-                    }
+                    gameState.board[i]=gameState.aiMarker;
+                    let sc = minimax(gameState.board, 0, false);
+                    gameState.board[i]=null;
+                    if(sc>best) { best=sc; mv=i; }
                 }
             }
-            return move;
+            return mv;
         }
-
-        function minimax(board, depth, isMaximizing) {
-            let result = checkWinnerRaw(gameState.aiMarker);
-            if(result === 1) return 10 - depth;
-            result = checkWinnerRaw(gameState.pMarker);
-            if(result === 1) return depth - 10;
-            if(!board.includes(null)) return 0;
-
-            if(isMaximizing) {
-                let bestScore = -Infinity;
-                for(let i=0; i<9; i++) {
-                    if(!board[i]) {
-                        board[i] = gameState.aiMarker;
-                        let score = minimax(board, depth + 1, false);
-                        board[i] = null;
-                        bestScore = Math.max(score, bestScore);
-                    }
-                }
-                return bestScore;
+        function minimax(b, d, isMax) {
+            if(checkWin(gameState.aiMarker)) return 10-d;
+            if(checkWin(gameState.pMarker)) return d-10;
+            if(!b.includes(null)) return 0;
+            
+            if(isMax) {
+                let best = -Infinity;
+                for(let i=0;i<9;i++) if(!b[i]) { b[i]=gameState.aiMarker; best=Math.max(best, minimax(b,d+1,false)); b[i]=null; }
+                return best;
             } else {
-                let bestScore = Infinity;
-                for(let i=0; i<9; i++) {
-                    if(!board[i]) {
-                        board[i] = gameState.pMarker;
-                        let score = minimax(board, depth + 1, true);
-                        board[i] = null;
-                        bestScore = Math.min(score, bestScore);
-                    }
-                }
-                return bestScore;
+                let best = Infinity;
+                for(let i=0;i<9;i++) if(!b[i]) { b[i]=gameState.pMarker; best=Math.min(best, minimax(b,d+1,true)); b[i]=null; }
+                return best;
             }
         }
-
-        function checkWinnerRaw(player) {
-            const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-            return wins.some(w => w.every(i => gameState.board[i] === player)) ? 1 : 0;
-        }
+        function checkWin(m) { return [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]].some(w=>w.every(i=>gameState.board[i]===m)); }
 
         function checkEnd() {
-            let winner = null;
-            if (checkWinnerRaw(gameState.pMarker)) winner = 'user';
-            else if (checkWinnerRaw(gameState.aiMarker)) winner = 'ai';
-            else if (!gameState.board.includes(null)) winner = 'draw';
-
-            if (winner) {
+            let w = null;
+            if(checkWin(gameState.pMarker)) w = 'user';
+            else if(checkWin(gameState.aiMarker)) w = 'ai';
+            else if(!gameState.board.includes(null)) w = 'draw';
+            
+            if(w) {
                 gameState.active = false;
-                if (winner === 'user') {
-                    statusMsg.textContent = "VICTORY!";
-                    statusMsg.className = "text-4xl font-bold text-green-400 drop-shadow-[0_0_15px_rgba(74,222,128,0.5)]";
+                if(w==='user') {
+                    statusMsg.textContent="VICTORY!"; statusMsg.className="text-3xl font-bold text-green-400 drop-shadow-[0_0_15px_rgba(74,222,128,0.5)]";
                     gameState.wins++;
-                    triggerAIReaction(`The user just won. The score is User: ${gameState.wins}, You: ${gameState.losses}. Congratulate them briefly.`);
-                } else if (winner === 'ai') {
-                    statusMsg.textContent = "DEFEAT";
-                    statusMsg.className = "text-4xl font-bold text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]";
+                    if(gameState.difficulty==='Adaptive' && gameState.adaptiveLevel<2) gameState.adaptiveLevel++;
+                    aiReact(`User won. Score User:${gameState.wins} You:${gameState.losses}. Congratulate.`);
+                } else if(w==='ai') {
+                    statusMsg.textContent="DEFEAT"; statusMsg.className="text-3xl font-bold text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]";
                     gameState.losses++;
-                    triggerAIReaction(`You (the AI) just won. The score is User: ${gameState.wins}, You: ${gameState.losses}. Be playfully cocky.`);
+                    if(gameState.difficulty==='Adaptive' && gameState.adaptiveLevel>0) gameState.adaptiveLevel--;
+                    aiReact(`You won. Score User:${gameState.wins} You:${gameState.losses}. Gloat nicely.`);
                 } else {
-                    statusMsg.textContent = "DRAW";
-                    statusMsg.className = "text-4xl font-bold text-yellow-400";
+                    statusMsg.textContent="DRAW"; statusMsg.className="text-3xl font-bold text-yellow-400";
                     gameState.draws++;
-                    triggerAIReaction(`It's a draw. The score is User: ${gameState.wins}, You: ${gameState.losses}. Make a dry remark.`);
+                    aiReact("Draw. Boring.");
                 }
                 return true;
             }
             return false;
         }
 
-        // --- GEMINI API INTEGRATION ---
-        
-        async function triggerAIReaction(contextPrompt) {
-            // Passive reaction (doesn't show in chat history visually, just adds a message)
-            await callGemini(contextPrompt, true);
-        }
+        // CHAT & API
+        async function aiReact(p) { await callGemini(p, true); }
 
         async function sendChat() {
-            const txt = chatInput.value.trim();
+            const inp = document.getElementById('chat-input');
+            const txt = inp.value.trim();
             if(!txt) return;
-            
             addMsg('user', txt);
-            chatInput.value = "";
-            chatInput.disabled = true;
-            
-            const loadingId = addMsg('ai', 'Thinking...', true); // Loading state
-            
+            inp.value=""; inp.disabled=true;
+            const lid = addMsg('ai', '...', true);
             try {
-                const response = await callGemini(txt);
-                document.getElementById(loadingId).remove();
-                addMsg('ai', response);
+                const res = await callGemini(txt);
+                document.getElementById(lid).remove();
+                addMsg('ai', res);
             } catch(e) {
-                document.getElementById(loadingId).remove();
-                addMsg('ai', `Error: ${e.message}`);
+                document.getElementById(lid).remove();
+                addMsg('ai', "Error: " + e.message);
             }
-            
-            chatInput.disabled = false;
-            chatInput.focus();
+            inp.disabled=false; inp.focus();
         }
 
-        async function callGemini(userText, isReaction = false) {
+        async function callGemini(txt, isReaction=false) {
+            // Using standard v1beta endpoint
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
             
-            // Context Logic
-            const boardState = gameState.board.map(x => x || '-').join('');
-            const context = `
-                Current Game State:
-                Board: [${boardState}] (0-8 positions).
-                User plays: ${gameState.pMarker}. You play: ${gameState.aiMarker}.
-                Difficulty: ${gameState.difficulty}.
-                Score - User: ${gameState.wins}, AI: ${gameState.losses}.
-                User Name: ${user}.
-            `;
-
-            // Prepare History
-            // We combine context + history into the API payload
-            let contents = chatHistory.map(msg => ({
-                role: msg.role,
-                parts: [{ text: msg.text }]
-            }));
-
-            // Add the new message
-            contents.push({
-                role: "user",
-                parts: [{ text: `[Context: ${context}] ${userText}` }]
+            const context = `Context: TicTacToe. User:${user}(${gameState.pMarker}) vs AI(${gameState.aiMarker}). Board:${gameState.board.map(x=>x||'-').join('')}. Score U:${gameState.wins}-AI:${gameState.losses}.`;
+            
+            // Construct payload without system_instruction to be safe against all model versions
+            // We prepend instructions to the history instead
+            let promptParts = [{ text: "System: You are a witty game AI. Keep replies short (max 15 words)." }];
+            
+            chatHistory.forEach(h => {
+                promptParts.push({ text: (h.role==='user'?'User: ':'AI: ') + h.text });
             });
+            
+            promptParts.push({ text: `Current Context: ${context}` });
+            promptParts.push({ text: `User: ${txt}` });
 
             const payload = {
-                system_instruction: {
-                    parts: [{ text: "You are a witty, competitive, but helpful Tic-Tac-Toe AI opponent. Keep responses short (under 20 words) and conversational. Trash talk is allowed but keep it friendly. If the user asks for help, give a hint based on the board." }]
-                },
-                contents: contents,
-                generationConfig: {
-                    temperature: 0.9,
-                    maxOutputTokens: 100
-                }
+                contents: [{ role: "user", parts: promptParts }] // simplified payload structure for max compatibility
             };
 
-            const response = await fetch(url, {
+            const res = await fetch(url, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error?.message || response.statusText);
-            }
-
+            const data = await res.json();
+            if(!res.ok) throw new Error(data.error?.message || "API Error");
+            
             const reply = data.candidates[0].content.parts[0].text;
-            
-            // Update History (only for explicit chats, not background reactions)
             if(!isReaction) {
-                // To avoid "User, User" history errors, we only push if the last msg wasn't user, 
-                // or we rely on the fact that we wait for AI response before allowing new input.
-                chatHistory.push({ role: "user", text: userText }); // Store raw text w/o context for cleanliness
-                chatHistory.push({ role: "model", text: reply });
-                
-                // Prune history
-                if(chatHistory.length > MAX_HISTORY) chatHistory = chatHistory.slice(chatHistory.length - MAX_HISTORY);
+                chatHistory.push({role:'user', text:txt});
+                chatHistory.push({role:'model', text:reply});
+                if(chatHistory.length>MAX_HISTORY) chatHistory=chatHistory.slice(-MAX_HISTORY);
             }
-            
             return reply;
         }
 
-        function addMsg(role, text, isLoading=false) {
+        function addMsg(role, text, loading=false) {
             const div = document.createElement('div');
-            const isUser = role === 'user';
-            
-            div.className = `chat-bubble p-3 rounded-2xl text-sm mb-3 animate-fade-in ${isUser 
-                ? 'bg-blue-600 text-white ml-auto chat-user rounded-tr-none' 
-                : 'bg-slate-700 text-slate-200 mr-auto chat-ai rounded-tl-none border border-slate-600'}`;
-            
+            div.className = `chat-bubble p-3 rounded-2xl text-xs mb-2 animate-fade-in ${role==='user'?'bg-blue-600 text-white ml-auto rounded-tr-none':'bg-slate-700 text-slate-200 mr-auto rounded-tl-none'}`;
             div.textContent = text;
-            if(isLoading) {
-                div.id = "typing-" + Date.now();
-                div.classList.add('animate-pulse', 'italic', 'text-slate-400');
-            }
-            
+            if(loading) { div.id="lid-"+Date.now(); div.classList.add('animate-pulse'); }
             chatBox.appendChild(div);
             chatBox.scrollTop = chatBox.scrollHeight;
             return div.id;
